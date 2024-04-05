@@ -1,9 +1,44 @@
-import { createContext } from "react";
+import { createContext, useState } from "react";
 
 export const GlobalContext = createContext(null);
 
 const GlobalState = ({ children }) => {
-  return <GlobalContext.Provider>{children}</GlobalContext.Provider>;
+  const [formData, setFormData] = useState({
+    type: "income",
+    amount: 0,
+    description: "",
+  });
+
+  const [value, setValue] = useState("expense");
+  const [totalExpense, setTotalExpense] = useState(0);
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [allTransactions, setAllTransactions] = useState([]);
+
+  const handleFormSubmit = (formData) => {
+    if (!formData.description || !formData.amount) return;
+
+    setAllTransactions([...allTransactions, { ...formData, id: Date.now() }]);
+  };
+
+  return (
+    <GlobalContext.Provider
+      value={{
+        formData,
+        setFormData,
+        totalExpense,
+        setTotalExpense,
+        totalIncome,
+        setTotalIncome,
+        value,
+        setValue,
+        allTransactions,
+        setAllTransactions,
+        handleFormSubmit,
+      }}
+    >
+      {children}
+    </GlobalContext.Provider>
+  );
 };
 
 export default GlobalState;
